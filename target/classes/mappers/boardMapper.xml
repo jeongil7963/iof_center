@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.spring.acorn.mapper.board">
+	
+	<select id="list" resultType="com.spring.acorn.board.model.vo.BoardVO">
+		select bno, title, content, writer, regdate, viewcnt
+		from tbl_board
+		order by bno desc
+	</select>
+	
+	<!-- parameterType을 안주어도 된다. -->
+	<insert id="insert" parameterType="com.spring.acorn.board.model.vo.BoardVO" >
+		insert into tbl_board values( boardseq.nextval, #{title}, #{content}, #{writer},default,default)
+	</insert>
+	
+	<select id="read" parameterType="com.spring.acorn.board.model.vo.BoardVO" resultType="com.spring.acorn.board.model.vo.BoardVO">
+		select bno, title, content, writer, regdate, viewcnt
+		from tbl_board
+		where bno = #{bno}
+	</select>
+	
+	<delete id="remove" parameterType="com.spring.acorn.board.model.vo.BoardVO">
+		DELETE 
+		FROM TBL_BOARD
+		WHERE BNO = #{bno} 
+	</delete>
+	
+	<update id="modify" parameterType="com.spring.acorn.board.model.vo.BoardVO">
+		UPDATE 
+		TBL_BOARD
+		SET	TITLE = #{title}, 
+			CONTENT = #{content}
+		WHERE BNO = #{bno} 
+	</update>
+	
+	<update id="upcnt">
+	UPDATE TBL_BOARD
+	SET VIEWCNT = VIEWCNT + 1
+	WHERE BNO = #{bno}
+	</update>
+	
+	<select id="search" resultType="com.spring.acorn.board.model.vo.BoardVO">
+		SELECT BNO, TITLE, CONTENT, WRITER, REGDATE, VIEWCNT
+		FROM TBL_BOARD
+		<where>
+			<if test="type == 'title'">
+			TITLE LIKE '%'||#{keyword}||'%'
+			</if>
+			<if test="type == 'writer'">
+			WRITER LIKE '%'||#{keyword}||'%'
+			</if>		
+		</where>
+		
+	</select>
+	
+	
+	<select id="readReply" resultType="com.spring.acorn.board.model.vo.ReplyVO">
+		select rseq, bno, rwriter, rcontent
+		from reply
+		where bno = #{bno}
+		order by rseq desc
+	</select>
+	
+	<insert id="rInsert" parameterType="com.spring.acorn.board.model.vo.ReplyVO" >
+		insert into reply values( replyseq.nextval, #{bno}, #{rwriter}, #{rcontent})
+	</insert>
+	
+	<delete id="rRemove" parameterType="com.spring.acorn.board.model.vo.ReplyVO">
+		DELETE 
+		FROM REPLY
+		WHERE RSEQ = #{rseq} 
+	</delete>
+	
+	
+</mapper>  
+

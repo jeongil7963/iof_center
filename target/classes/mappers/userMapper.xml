@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.spring.acorn.mapper.user">
+	<!-- session.selectOne("com.spring.acorn.mapper.user.login",user) -->
+	<select id="login" resultType="user">
+		select id, upw, uname, upoint
+		from tbl_user2
+		where id = #{id} and upw = #{upw}
+	</select>
+</mapper>  
+

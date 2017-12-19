@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.iof.center.admin.device.weather">
+	
+	<!-- 전체 칼럼 수 -->
+	<select id="count_weather" resultType="int">
+		select count(*)
+		from iof_weather
+		<include refid="paging"></include>
+	</select>
+	
+	<!-- 페이징 처리 수 -->
+	<select id="getRead_weather" parameterType="map" resultType="weather">
+		select * 
+		from iof_weather
+		<include refid="paging"></include>
+		order by weather_createtime desc
+		limit #{page}, 10 
+	</select>
+	
+	<sql id="paging">
+            WHERE weather_name LIKE CONCAT('%',#{keyword},'%')
+            OR unit_idx LIKE CONCAT('%',#{keyword},'%')
+	</sql>
+	<!-- *********************************페이징********************************* -->
+	
+	 <insert id="weatherInsert" parameterType="weather">
+		insert into iof_weather (
+								weather_name, 
+								weather_createtime,
+								weather_createtime,
+								weather_updatetime,
+								weather_code,
+								user_id,
+								api_idx,
+								unit_idx
+							  )
+			values(#{weather_name},
+				   #{weather_createtime},
+				   #{weather_createtime},
+				   #{weather_updatetime},
+				   #{weather_code},
+				   #{user_id},
+				   #{api_idx},
+				   #{unit_idx})
+	</insert>
+
+	<delete id="weatherdel" parameterType="weather">
+			delete
+			from iof_weather
+			where weather_idx = #{weather_idx}
+	</delete>
+	
+	<select id="weatherIdxRead" resultType="weather">
+		select *
+		from iof_weather
+		where weather_idx = #{weather_idx}
+	</select>
+	
+	<select id="adminWeatherIdxMax" resultType="weather" parameterType="weather">
+		select *
+		from iof_weather
+		WHERE weather_code = (select MAX(weather_code)AS weather_code FROM iof_weather)
+	</select>
+	
+	<update id="weatherUpdate" parameterType="weather">
+		update 	iof_weather 
+		SET 	
+				weather_name = #{weather_name},
+				weather_updatetime = #{weather_updatetime},
+				user_id = #{user_id},
+				unit_idx = #{unit_idx},
+				region_idx = #{region_idx}
+				
+		Where 	weather_idx = #{weather_idx}
+	</update>
+</mapper>

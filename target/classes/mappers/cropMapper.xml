@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 회원 정보 삽입 -->
+<mapper namespace="com.iof.center.admin.crop">
+
+
+	<select id="checkbox_crop" resultType="crop">
+		SELECT 	*
+		FROM 	iof_crops
+		WHERE   unit_idx LIKE CONCAT('%',#{unit_idx},'%')
+	</select>
+
+	<!-- 유닛 정보 수정 -->
+	<update id="crop_modify" parameterType="crop">
+		UPDATE 	iof_crops
+		SET		crop_name = #{crop_name}, 
+				crop_timing = #{crop_timing}, 
+				crop_soil = #{crop_soil}, 
+				region_idx = #{region_idx},
+				unit_idx = #{unit_idx}
+		WHERE 	crop_idx = #{crop_idx}
+	</update>
+	
+	<select id="get_crop" parameterType="int" resultType="crop">
+		SELECT * 
+		FROM iof_crops
+		WHERE crop_idx = #{crop_idx}
+	</select>
+	
+	
+	<!-- 유닛 삭제 -->
+	<delete id="delete_crop" parameterType="int">
+		delete from iof_crops
+		where crop_idx = #{crop_idx}
+	</delete>
+	
+
+	<insert id="insert_crop" parameterType="crop">
+		insert into iof_crops
+		values(
+			default,
+			#{crop_name}, 
+			#{crop_timing}, 
+			#{crop_soil}, 
+			#{region_idx},
+			#{unit_idx},
+			#{user_id}
+		)
+	</insert>
+
+	<!-- 전체 회원 수 -->
+	<select id="count_crop" resultType="int">
+		select count(*)
+		from iof_crops
+		<include refid="paging"></include>
+	</select>
+	
+	<!-- 페이징 처리 수 -->
+	<select id="getRead_crop" parameterType="map" resultType="crop">
+		SELECT * 
+		FROM iof_crops
+		<include refid="paging"></include>
+		ORDER BY crop_idx desc
+		LIMIT #{page}, 10 
+	</select>
+	
+	<sql id="paging">
+            WHERE crop_name LIKE CONCAT('%',#{keyword},'%')
+            OR crop_timing LIKE CONCAT('%',#{keyword},'%')
+            OR crop_soil LIKE CONCAT('%',#{keyword},'%')
+	</sql>
+	
+	<select id="adminCropList" resultType="crop">
+		SELECT *
+		FROM iof_crops
+		ORDER BY crop_name ASC
+	</select>
+	
+	<select id="adminCropidxRead" resultType="crop">
+		SELECT *
+		FROM iof_crops
+		WHERE crop_idx = #{crop_idx}
+	</select>
+	
+</mapper>

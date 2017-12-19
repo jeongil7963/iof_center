@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.iof.center.admin.uploadfiles">
+<insert id="fileUploadInsert" parameterType="uploadfiles">
+		insert into iof_farming_methods_files (
+									frm_idx,
+									frm_f_filepath,
+									frm_f_filename, 
+									frm_f_filename_org,
+									frm_f_size,
+									frm_f_type,
+									frm_f_no,
+									frm_f_random
+									
+							  )
+			values(#{frm_idx},
+				   #{frm_f_filepath},
+				   #{frm_f_filename},
+				   #{frm_f_filename_org},
+				   #{frm_f_size},
+				   #{frm_f_type},
+				   #{frm_f_no},
+				   #{frm_f_random})
+	</insert>
+<select id="fileUploadOneSelect" resultType="uploadfiles">
+	select frm_f_idx
+	from iof_farming_methods_files
+	where frm_f_idx = (SELECT MAX(frm_f_idx)AS frm_f_idx 
+					  from farming_methods_files_test)
+</select>	
+<!-- 다운로드 파일 Read-->
+<select id="fileUploadRead" resultType="uploadfiles" parameterType="uploadfiles">
+	select *
+	from iof_farming_methods_files
+	where frm_idx = #{frm_idx}
+</select>
+
+<!-- 최근 다운로드 파일 Read-->
+<select id="fileUploadIdxRead" resultType="uploadfiles" parameterType="uploadfiles">
+	select *
+	from iof_farming_methods_files
+	where frm_f_idx = #{frm_f_idx}
+</select>
+
+<!-- 다운로드 파일 delete-->
+<delete id="fileUploadDelete" parameterType="uploadfiles">
+		delete
+		from iof_farming_methods_files
+		where frm_idx = #{frm_idx}
+</delete>
+
+<delete id="fileUploadIdxDelete" parameterType="uploadfiles">
+		delete
+		from iof_farming_methods_files
+		where frm_f_idx = #{frm_f_idx}
+</delete>
+
+<!-- 재배방법 정보 수정 -->
+	<update id="fileUpdate" parameterType="uploadfiles">
+		update 	iof_farming_methods_files 
+		SET 	
+				frm_idx = #{frm_idx},
+		Where 	frm_f_idx = #{frm_f_idx}
+	</update>
+	
+<!-- 재배방법 정보 수정 -->
+	<update id="fileModifyUpdate" parameterType="uploadfiles">
+		update 	iof_farming_methods_files 
+		SET 	
+				frm_idx = #{frm_idx},
+				frm_f_filepath = #{frm_f_filepath},
+				frm_f_size = #{frm_f_size},
+				frm_f_type = #{frm_f_type},
+				frm_f_filename_org = #{frm_f_filename_org},
+				frm_f_filename = #{frm_f_filename},
+				frm_f_updatetime = #{frm_f_updatetime},
+				frm_f_no = #{frm_f_no}
+		Where 	frm_f_idx = #{frm_f_idx}
+	</update>
+	
+	
+		<!-- 전체 칼럼 수 -->
+	<select id="count_upload" resultType="int">
+		select count(*)
+		from iof_farming_methods_files
+		<include refid="paging"></include>
+	</select>
+	
+	<!-- 페이징 처리 수 -->
+	<select id="getRead_upload" parameterType="map" resultType="uploadfiles">
+		select * 
+		from iof_farming_methods_files
+		<include refid="paging"></include>
+		order by frm_idx desc
+		limit #{page}, 10 
+	</select>
+	
+		<!-- 지역 삭제 -->
+	<select id="deleteUpload" parameterType="String">
+		delete from iof_farming_methods_files
+		where frm_f_idx = #{frm_f_idx}
+	</select>
+	
+	<sql id="paging">
+            WHERE frm_f_idx LIKE CONCAT('%',#{keyword},'%')
+            OR frm_f_filename_org LIKE CONCAT('%',#{keyword},'%')
+            OR frm_f_filepath LIKE CONCAT('%',#{keyword},'%')
+            OR frm_f_size LIKE CONCAT('%',#{keyword},'%')
+	</sql>
+	
+ <!-- ***********************************씨케이 에디터 DB******************************************* -->
+	
+	<insert id="CkUploadInsert" parameterType="uploadfiles">
+		insert into farming_editor_uploadfiles_test (
+									frm_idx,
+									frm_f_filepath,
+									frm_f_filename, 
+									frm_f_filename_org,
+									frm_f_size,
+									frm_f_type,
+									frm_f_random
+							  )
+			values(#{frm_idx},
+				   #{frm_f_filepath},
+				   #{frm_f_filename},
+				   #{frm_f_filename_org},
+				   #{frm_f_size},
+				   #{frm_f_type},
+				   #{frm_f_random})
+	</insert>
+<!-- 다운로드 파일 idx read-->
+<select id="CkUploadOneSelect" resultType="uploadfiles">
+	select frm_f_idx
+	from farming_editor_uploadfiles_test
+	where frm_f_idx = (select MAX(frm_f_idx)AS frm_f_idx FROM farming_editor_uploadfiles_test)
+</select>
+
+<!-- 다운로드 파일 idx read-->
+<select id="CkUploadRandom" resultType="uploadfiles">
+	select *
+	from farming_editor_uploadfiles_test
+	where frm_f_random =  #{frm_f_random}
+</select>	
+
+
+<!-- 다운로드 파일 Read-->
+<select id="CkUploadRead" resultType="uploadfiles" parameterType="uploadfiles">
+	select *
+	from farming_editor_uploadfiles_test
+	where frm_idx = #{frm_idx}
+</select>
+
+<!-- 최근 다운로드 파일 Read-->
+<select id="CkUploadIdxRead" resultType="uploadfiles" parameterType="uploadfiles">
+	select *
+	from farming_editor_uploadfiles_test
+	where frm_f_idx = #{frm_f_idx}
+</select>
+
+<!-- 다운로드 파일 delete-->
+<delete id="CkUploadDelete" parameterType="uploadfiles">
+		delete
+		from farming_editor_uploadfiles_test
+		where frm_idx = #{frm_idx}
+</delete>
+
+<!-- 재배방법 정보 수정 -->
+	<update id="CkUpdate" parameterType="uploadfiles">
+		update 	farming_editor_uploadfiles_test
+		SET 	
+				frm_idx = #{frm_idx}
+		Where 	frm_f_random = #{frm_f_random}
+	</update>
+	
+	</mapper>

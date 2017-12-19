@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.iof.center.admin.farming">
+	<!-- 재배방법 정보 목록 -->
+	<select id="farmingList" resultType="farming">
+		select *
+		from iof_farming_methods
+		order by frm_idx asc
+	</select>
+	
+	<!-- 전체 칼럼 수 -->
+	<select id="count_farming" resultType="int">
+		select count(*)
+		from iof_farming_methods
+		<include refid="paging"></include>
+	</select>
+	
+	<!-- 페이징 처리 수 -->
+	<select id="getRead_farming" parameterType="map" resultType="farming">
+		select * 
+		from iof_farming_methods
+		<include refid="paging"></include>
+		order by frm_createtime desc
+		limit #{page}, 10 
+	</select>
+	
+	<sql id="paging">
+            WHERE frm_title LIKE CONCAT('%',#{keyword},'%')
+            OR frm_contents LIKE CONCAT('%',#{keyword},'%')
+            OR crop_name LIKE CONCAT ('%',#{keyword},'%')
+	</sql>
+	
+	<delete id="farmingDelete" parameterType="farming">
+		delete
+		from iof_farming_methods
+		where frm_idx = #{frm_idx}
+	</delete>
+	
+	<!--재배방법 정보 등록 -->
+	<insert id="farmingInsert" parameterType="farming">
+		insert into iof_farming_methods (
+								frm_title,
+								frm_contents, 
+								frm_createtime,
+								frm_updatetime,
+								crop_idx,
+								crop_name
+							  )
+			values(#{frm_title},
+				   #{frm_contents},
+				   #{frm_createtime},
+				   #{frm_updatetime},
+				   #{crop_idx},
+				   #{crop_name})
+	</insert>
+	
+	<!-- 재배방법 정보 수정 -->
+	<update id="farmingUpdate" parameterType="farming">
+		update 	iof_farming_methods 
+		SET 	
+				frm_title = #{frm_title},
+				frm_contents = #{frm_contents},
+				frm_updatetime = #{frm_updatetime},
+				crop_idx = #{crop_idx},
+				crop_name = #{crop_name}
+		Where 	frm_idx = #{frm_idx}
+	</update>
+	
+	<!-- 재배방법 정보 목록 -->
+	<select id="farmingRead" resultType="farming" parameterType="farming">
+		select *
+		from iof_farming_methods
+		where frm_idx = #{frm_idx}
+	</select>
+	
+	<!-- 재배방법 최근 등록 값 가져오기 -->
+	<select id="farmingOneRead" resultType="farming" parameterType="farming">
+		select *
+		from iof_farming_methods
+		WHERE frm_idx = (select MAX(frm_idx)AS frm_idx FROM iof_farming_methods)
+	</select>
+</mapper>  
