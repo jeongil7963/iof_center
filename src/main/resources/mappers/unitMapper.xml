@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.iof.center.admin.unit">
+
+	<!-- 유닛 명 -->
+	<select id="get_unit_name" resultType="unit_name">
+		SELECT unit_idx, unit_name
+		FROM iof_units		
+	</select>
+
+	<select id="total_unit_code" resultType="unit">
+		SELECT 	*
+		FROM 	iof_units
+		where	region_idx = #{region_idx}
+	</select>
+	
+	<!-- 전체 회원 수 -->
+	<select id="count_unit" resultType="int">
+		select count(*)
+		from iof_units
+		<include refid="paging"></include>
+	</select>
+	
+	<!-- 페이징 처리 수 -->
+	<select id="getRead_unit" parameterType="map" resultType="unit">
+		SELECT * 
+		FROM iof_units
+		<include refid="paging"></include>
+		ORDER BY unit_createtime desc
+		LIMIT #{page}, 10 
+	</select>
+	
+	<sql id="paging">
+            WHERE unit_manager LIKE CONCAT('%',#{keyword},'%')
+            OR unit_name LIKE CONCAT('%',#{keyword},'%')
+            OR unit_cell_use_cnt LIKE CONCAT('%',#{keyword},'%')
+            OR unit_cell_number LIKE CONCAT('%',#{keyword},'%')
+	</sql>
+	
+	<!-- 유닛 정보 등록 -->
+	<insert id="unitInsert" parameterType="unit">
+		INSERT iof_units
+		VALUES (
+					default,
+					#{unit_manager},
+					#{unit_name},
+					#{unit_cell_number},
+					#{unit_cell_row},
+					#{unit_cell_col},
+					#{unit_cell_use_cnt},
+					#{unit_createtime},
+					#{unit_updatetime},
+					#{unit_code},
+					#{user_id},
+					#{region_idx}
+				)
+	</insert>
+	
+	<!-- 최근 등록한 코드 값 가져오기 -->
+	<select id="lastUnitCode" resultType="java.lang.String">
+		SELECT 	unit_code
+		FROM 	iof_units
+		<include refid="search"></include>
+		ORDER BY unit_code DESC
+		LIMIT 0,1
+	</select>
+	
+	<sql id="search">
+            WHERE unit_code LIKE CONCAT(#{unit_code},'%')
+	</sql>
+	
+	<!-- 유닛 삭제 -->
+	<delete id="delete_unit" parameterType="int">
+		delete from iof_units
+		where unit_idx = #{unit_idx}
+	</delete>
+	
+	<select id="get_unit" parameterType="int" resultType="unit">
+		SELECT * 
+		FROM iof_units
+		WHERE unit_idx = #{unit_idx}
+	</select>
+	
+	<!-- 유닛 정보 수정 -->
+	<update id="unit_modify" parameterType="unit">
+		UPDATE 	iof_units
+		SET		unit_manager = #{unit_manager}, 
+				unit_cell_number = #{unit_cell_number}, 
+				unit_cell_row = #{unit_cell_row}, 
+				unit_cell_col = #{unit_cell_col},
+				unit_cell_use_cnt = #{unit_cell_use_cnt},
+				unit_name = #{unit_name},
+				region_idx = #{region_idx},
+				unit_updatetime = #{unit_updatetime},
+				unit_code = #{unit_code}
+		WHERE 	unit_idx = #{unit_idx}
+	</update>
+<!-- 
+	지역 정보 목록
+	<select id="regionList" resultType="region">
+		SELECT *
+		FROM iof_region
+		ORDER BY region_name ASC
+	</select>
+
+
+	지역 정보
+	<select id="regionRead" resultType="region" parameterType="region">
+		SELECT 	*
+		FROM 	iof_region
+		WHERE	region_idx = #{region_idx}
+	</select>
+	
+	
+	
+	최근 등록한 코드 값 가져오기
+	<select id="lastRegionCode" resultType="java.lang.String">
+		SELECT 	region_code
+		FROM 	iof_region
+		ORDER BY region_idx DESC
+		LIMIT 0,1
+	</select>
+	
+	지역정보 수정
+	<update id="regionModify" parameterType="region">
+		UPDATE 	iof_region
+		SET		region_name	= #{region_name}, 
+				region_addr = #{region_addr}
+		WHERE 	region_idx 	= #{region_idx}
+	</update>
+ -->
+ 
+ 	<update id="unit_weather_update" parameterType="unit">
+		update iof_units 
+		set	weather_check = #{arduino_check}
+			
+		where unit_idx = #{unit_idx}
+	</update>
+ 	
+</mapper>  

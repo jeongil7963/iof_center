@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 회원 정보 삽입 -->
+<mapper namespace="com.iof.center.admin.api">
+	
+	<insert id="insert_api" parameterType="api">
+		insert into iof_apikeys (
+					api_idx,
+					api_key)
+			values(default,
+				#{api_key})
+	</insert>
+	
+	<!-- 회원 검색 -->
+	<select id="getApi" parameterType="api" resultType="api">
+		select *
+		from iof_apikeys
+		where api_key = #{api_key}
+	</select>
+	
+	<select id="apiMaxRead" resultType="api" parameterType="api">
+		select *
+		from iof_apikeys
+		WHERE api_idx = (select MAX(api_idx)AS api_idx FROM iof_apikeys)
+	</select>
+	
+	<delete id="apidel" parameterType="api">
+		delete
+		from iof_apikeys
+		where api_idx = #{api_idx}
+	</delete>
+	
+	<select id="apiIdxRead" parameterType="api" resultType="api">
+		select *
+		from iof_apikeys
+		where api_idx = #{api_idx}
+	</select>
+
+</mapper>

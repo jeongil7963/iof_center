@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd"> 
+	<tiles-definitions> 
+		
+		<!-- base-definition --> 
+		<definition name="base" template="/WEB-INF/views/layouts/baseLayout.jsp"> 
+			<put-attribute name="title" value="" /> 
+			<put-attribute name="header" value="/WEB-INF/views/layouts/header.jsp" /> 
+			<put-attribute name="leftmenu" value="/WEB-INF/views/layouts/leftmenu.jsp" />
+			<put-attribute name="body" value="" /> 
+			<put-attribute name="footer" value="/WEB-INF/views/layouts/footer.jsp" /> 
+			<put-attribute name="rightmenu" value="/WEB-INF/views/layouts/rightmenu.jsp" />
+		</definition> 
+		
+		<!-- admin-definition --> 
+		<definition name="admin" template="/WEB-INF/views/layouts/adminLayout.jsp"> 
+			<put-attribute name="title" value="" /> 
+			<put-attribute name="header" value="/WEB-INF/views/layouts/header.jsp" /> 
+			<put-attribute name="leftmenu" value="/WEB-INF/views/layouts/adminLeftmenu.jsp" />
+			<put-attribute name="body" value="" /> 
+			<put-attribute name="footer" value="/WEB-INF/views/layouts/footer.jsp" /> 
+			<put-attribute name="rightmenu" value="/WEB-INF/views/layouts/rightmenu.jsp" />
+		</definition> 
+		
+		<!-- Home Page  -->
+		<definition name="*" extends="base"> 
+			<put-attribute name="title" value="IoF" /> 
+			<put-attribute name="body" value="/WEB-INF/views/{1}.jsp" /> 
+		</definition> 
+		
+		<!-- 2depth Page --> 
+		<definition name="*/*" extends="base"> 
+			<put-attribute name="title" value="List" /> 
+			<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp" /> 
+		</definition> 
+		
+		<!-- 3depth Page --> 
+		<definition name="*/*/*" extends="admin"> 
+			<put-attribute name="title" value="List" /> 
+			<put-attribute name="body" value="/WEB-INF/views/{1}/{2}/{3}.jsp" /> 
+		</definition> 
+		
+		<!-- 4depth Page --> 
+		<definition name="*/*/*/*" extends="admin"> 
+			<put-attribute name="title" value="List" /> 
+			<put-attribute name="body" value="/WEB-INF/views/{1}/{2}/{3}/{4}.jsp" /> 
+		</definition>
+		 		
+	</tiles-definitions>

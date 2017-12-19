@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+<configuration>
+	<typeAliases>
+		<!-- <typeAlias type="com.spring.acorn.user.model.vo.UserVO" alias="user" /> -->
+		<typeAlias type="com.iof.center.user.vo.UserVO" alias ="user"/>
+		<typeAlias type="com.iof.center.admin.region.vo.AdminRegionVO" alias="region" />
+		<typeAlias type="com.iof.center.admin.farming.vo.AdminFarmingVo" alias="farming" />
+		<typeAlias type="com.iof.center.admin.uploadfiles.vo.AdminUploadfilesVo" alias="uploadfiles" />
+		<typeAlias type="com.iof.center.admin.unit.vo.AdminUnitVO" alias="unit" />
+		<typeAlias type="com.iof.center.admin.unit.vo.AdminUnitNameVO" alias="unit_name" />
+		<typeAlias type="com.iof.center.admin.cell.vo.AdminCellVO" alias="cell" />
+		<typeAlias type="com.iof.center.admin.crop.vo.AdminCropVO" alias="crop" />
+		<typeAlias type="com.iof.center.admin.api.vo.AdminApiVO" alias="api" />
+		<typeAlias type="com.iof.center.restful.vo.Cell_Insert_VO" alias="rest" />
+		<typeAlias type="com.iof.center.admin.raspberry.vo.AdminRaspberryVo" alias="raspberry" />
+		<typeAlias type="com.iof.center.admin.arduino.vo.AdminArduinoVo" alias="arduino" />
+		<typeAlias type="com.iof.center.admin.weather.vo.AdminWeatherVo" alias="weather" />
+	</typeAliases>
+</configuration>

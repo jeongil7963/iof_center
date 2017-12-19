@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	<!-- 1. DataSource 설정추가하고 JUnit 연결 테스트하기 -->
+
+	<bean id="dataSource"
+        class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <!-- <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
+        <property name="url" value="jdbc:mysql://13.124.28.87:3308/candh?useUnicode=true&amp;characterEncoding=utf8"></property>-->
+        <!-- ?useSSL=false&amp;serverTimezone=UTC -->
+        <property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy" />
+   		<property name="url" value="jdbc:log4jdbc:mysql://13.124.28.87:3308/candh?useUnicode=true&amp;characterEncoding=utf8&amp;serverTimezone=UTC" />
+        <property name="username" value="candh"></property>
+        <property name="password" value="candh123"></property>
+    </bean> 
+	
+	<!-- 2. MyBatis 연동을 위한 추가 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <!-- 3. resource에 mybatis-config.xml 만들고 추가하기 -->
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+        
+        <!-- 4. resource에 mappers 디렉토리를 만들고 추가하기 mybatis dqm -->
+        <property name="mapperLocations" value="classpath:mappers/**/*Mapper.xml" />
+    </bean>
+    
+    <!-- 6. @repository 에서 의존성 주입을 위한 설정 -->
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
+	</bean>
+	
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!-- aop annotation 설정 @Aspect, @Before, @After -->
+	<aop:aspectj-autoproxy/>
+	
+	
+	<!-- aop configuration -->
+	<!-- <bean id="target" class="com.spring.acorn.aop.service.AopCoreImpl"></bean>
+	
+	<aop:config>
+		<aop:pointcut expression="execution(public * com.spring.acorn..*Impl.e*(..))" id="beforeMethod"/>
+		
+		<aop:aspect ref="before">
+			<aop:before method="before" pointcut-ref="beforeMethod"/>
+		</aop:aspect>
+		
+		<aop:aspect ref="after">
+			<aop:after method="after" pointcut-ref="beforeMethod"/>
+		</aop:aspect>
+		
+	</aop:config>
+	
+	<bean id="before" class="com.spring.acorn.aop.aspect.BeforeAspect"></bean>
+	<bean id="after" class="com.spring.acorn.aop.aspect.AfterAspect"></bean> -->
+	<!-- 파일업로드 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="100000000" />
+        <property name="maxInMemorySize" value="100000000" />
+    </bean>
+    
+	<!-- 파일 다운로드 -->
+	<bean id="fileDownloadView" class="com.iof.center.admin.uploadfiles.controller.FileDownloadView" />
+	<bean id="fileViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+	    <property name="order" value="0" />
+	</bean>
+</beans>

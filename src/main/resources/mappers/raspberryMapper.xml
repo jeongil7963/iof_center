@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.iof.center.admin.device.raspberry">
+	
+	<!-- 전체 칼럼 수 -->
+	<select id="count_raspberry" resultType="int">
+		select count(*)
+		from iof_raspberry
+		<include refid="paging"></include>
+	</select>
+	
+	<!-- 페이징 처리 수 -->
+	<select id="getRead_raspberry" parameterType="map" resultType="raspberry">
+		select * 
+		from iof_raspberry
+		<include refid="paging"></include>
+		order by ras_createtime desc
+		limit #{page}, 10 
+	</select>
+	
+	<sql id="paging">
+            WHERE ras_name LIKE CONCAT('%',#{keyword},'%')
+	</sql>
+	<!-- *********************************페이징********************************* -->
+	
+	<insert id="raspberryInsert" parameterType="raspberry">
+		insert into iof_raspberry (
+								ras_name, 
+								ras_watering_operatingtime,
+								ras_createtime,
+								ras_updatetime,
+								ras_camera_operatingtime,
+								cell_idx,
+								user_id,
+								api_idx,
+								api_key,
+								unit_idx,
+								region_idx,
+								ras_code
+							  )
+			values(#{ras_name},
+				   #{ras_watering_operatingtime},
+				   #{ras_createtime},
+				   #{ras_updatetime},
+				   #{ras_camera_operatingtime},
+				   #{cell_idx},
+				   #{user_id},
+				   #{api_idx},
+				   #{api_key},
+				   #{unit_idx},
+				   #{region_idx},
+				   #{ras_code})
+	</insert>
+
+	<delete id="rasdel" parameterType="raspberry">
+			delete
+			from iof_raspberry
+			where ras_idx = #{ras_idx}
+	</delete>
+	
+	<select id="rasIdxRead" resultType="raspberry">
+		select *
+		from iof_raspberry
+		where ras_idx = #{ras_idx}
+	</select>
+	
+	<select id="rasCellIdxRead" resultType="raspberry">
+		select *
+		from iof_raspberry
+		where cell_idx = #{cell_idx}
+	</select>
+	
+	<select id="adminRasCheckList" resultType="raspberry">
+		select *
+		from iof_raspberry
+		where raspberry_check = null
+	</select>
+	
+	<select id="adminRasIdxMax" resultType="raspberry" parameterType="raspberry">
+		select *
+		from iof_raspberry
+		WHERE ras_code = (select MAX(ras_code)AS ras_code FROM iof_raspberry)
+	</select>
+	
+	<update id="raspberryUpdate" parameterType="raspberry">
+		update 	iof_raspberry 
+		SET 	
+				ras_name = #{ras_name},
+				ras_watering_operatingtime = #{ras_watering_operatingtime},
+				ras_updatetime = #{ras_updatetime},
+				ras_camera_operatingtime = #{ras_camera_operatingtime},
+				cell_idx = #{cell_idx},
+				user_id = #{user_id},
+				unit_idx = #{unit_idx},
+				region_idx = #{region_idx}
+				
+		Where 	ras_idx = #{ras_idx}
+	</update>
+	
+</mapper>  

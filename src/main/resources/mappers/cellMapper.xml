@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 회원 정보 삽입 -->
+<mapper namespace="com.iof.center.admin.cell">
+		
+	<update id="update_cell" parameterType="cell">
+		update iof_cells 
+		set	cell_updatetime = #{cell_updatetime},
+			cell_code = #{cell_code},
+			user_id = #{user_id},
+			unit_idx = #{unit_idx},
+			cell_name = #{cell_name},
+			crop_idx = #{crop_idx}
+		where cell_idx = #{cell_idx}
+	</update>
+	
+	<update id="update_cell2" parameterType="cell">
+		update iof_cells 
+		set	cell_updatetime = #{cell_updatetime},
+			user_id = #{user_id},
+			cell_name = #{cell_name}
+			where cell_idx = #{cell_idx}
+	</update>
+	
+	<select id="get_cell" parameterType="cell" resultType="cell">
+		select * 
+		from iof_cells
+		where cell_idx = #{cell_idx}
+	</select>
+	
+	<!-- 유닛 삭제 -->
+	<delete id="delete_cell" parameterType="int">
+		delete from iof_cells
+		where cell_idx = #{cell_idx}
+	</delete>
+	
+
+	<!-- 전체 텃밭  수 -->
+	<select id="count_cell" resultType="int">
+		select count(*)
+		From iof_cells as a left JOIN iof_crops as b
+			 ON a.crop_idx = b.crop_idx
+			 left JOIN iof_units as c
+			 ON a.unit_idx = c.unit_idx
+			 left JOIN iof_region as d
+			 ON c.region_idx = d.region_idx
+		<include refid="paging"></include>
+	</select>
+	
+	<!-- 유저 텃밭 수 -->
+	<select id="count_user_cell" parameterType="map" resultType="int">
+		select count(*)
+		From iof_cells as a left JOIN iof_crops as b
+			 ON a.crop_idx = b.crop_idx
+			 left JOIN iof_units as c
+			 ON a.unit_idx = c.unit_idx
+			 left JOIN iof_region as d
+			 ON c.region_idx = d.region_idx
+		WHERE 
+			a.user_id = #{user_id}
+            and( 
+            cell_name LIKE CONCAT('%',#{keyword},'%')
+            OR region_name LIKE CONCAT('%',#{keyword},'%')
+            OR unit_name LIKE CONCAT('%',#{keyword},'%')
+            OR crop_name LIKE CONCAT('%',#{keyword},'%'))
+	</select>
+	
+	<!-- 페이징 처리 수 -->
+	<select id="getRead_user_cell" parameterType="map" resultType="cell">
+		Select a.*, b.crop_name, c.unit_name, d.region_name
+		From iof_cells as a left JOIN iof_crops as b
+			 ON a.crop_idx = b.crop_idx
+			 left JOIN iof_units as c
+			 ON a.unit_idx = c.unit_idx
+			 left JOIN iof_region as d
+			 ON c.region_idx = d.region_idx
+		WHERE 
+			a.user_id = #{user_id}
+            and( 
+            cell_name LIKE CONCAT('%',#{keyword},'%')
+            OR region_name LIKE CONCAT('%',#{keyword},'%')
+            OR unit_name LIKE CONCAT('%',#{keyword},'%')
+            OR crop_name LIKE CONCAT('%',#{keyword},'%'))
+		ORDER BY cell_createtime desc
+		LIMIT #{page}, 10 
+	</select>
+	
+	<!-- 페이징 처리 수 -->
+	<select id="getRead_cell" parameterType="map" resultType="cell">
+		Select a.*, b.crop_name, c.unit_name, d.region_name
+		From iof_cells as a left JOIN iof_crops as b
+			 ON a.crop_idx = b.crop_idx
+			 left JOIN iof_units as c
+			 ON a.unit_idx = c.unit_idx
+			 left JOIN iof_region as d
+			 ON c.region_idx = d.region_idx
+		<include refid="paging"></include>
+		ORDER BY cell_createtime desc
+		LIMIT #{page}, 10 
+	</select>
+	
+	<sql id="paging">
+            WHERE a.user_id LIKE CONCAT('%',#{keyword},'%')
+            OR cell_name LIKE CONCAT('%',#{keyword},'%')
+            OR region_name LIKE CONCAT('%',#{keyword},'%')
+            OR unit_name LIKE CONCAT('%',#{keyword},'%')
+            OR crop_name LIKE CONCAT('%',#{keyword},'%')
+	</sql>
+
+	<insert id="insert_cell" parameterType="cell">
+		insert into iof_cells (
+		cell_idx,
+		cell_createtime,
+		cell_updatetime,
+		cell_code,
+		user_id,
+		unit_idx,
+		cell_name,
+		crop_idx,
+		api_idx
+		)
+		values(
+		default,
+		#{cell_createtime}, 
+		#{cell_updatetime}, 
+		#{cell_code}, 
+		#{user_id},
+		#{unit_idx},
+		#{cell_name},
+		#{crop_idx},
+		#{api_idx}
+		)
+	</insert>
+	
+	<!-- cell 검색 -->
+	<select id="cell_search" resultType="cell">
+		SELECT 	*
+		FROM 	iof_cells
+		WHERE 	unit_idx = #{unit_idx}
+	</select>
+	
+	<select id="cell_List" resultType="cell">
+		select *
+		from iof_cells
+		order by unit_idx asc
+	</select>
+	
+ 	<select id="cell_select_List" resultType="cell">
+		select *
+		from iof_cells 
+		where unit_idx = #{unit_idx} and
+			  raspberry_check = 0
+		order by unit_idx asc
+
+	</select>
+	
+	<select id="ard_cell_select_List" resultType="cell">
+		select *
+		from iof_cells 
+		where unit_idx = #{unit_idx} and
+			  arduino_check = 0
+		order by unit_idx asc
+
+	</select>
+	
+	<select id="cell_detail_List" resultType="cell">
+		select *
+		from iof_cells 
+		where unit_idx = #{unit_idx}
+		order by unit_idx asc
+
+	</select>
+	
+
+	<update id="cell_ras_update" parameterType="cell">
+		update iof_cells 
+		set	raspberry_check = #{raspberry_check}
+			
+		where cell_idx = #{cell_idx}
+	</update>
+	
+	<update id="cell_ard_update" parameterType="cell">
+		update iof_cells 
+		set	arduino_check = #{arduino_check}
+			
+		where cell_idx = #{cell_idx}
+	</update>
+	
+	
+
+</mapper>

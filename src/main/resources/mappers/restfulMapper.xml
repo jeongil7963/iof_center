@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 회원 정보 삽입 -->
+<mapper namespace="com.iof.center.restful">
+	
+	<insert id="insert_rest" parameterType="rest">
+		insert into iof_sensor_values (
+		sv_idx,
+		sv_sensor1,
+		sv_createtime,
+		user_id
+		)
+		values(
+		default,
+		#{sv_sensor1},
+		#{sv_createtime},
+		#{user_id}
+		)
+	</insert>
+	
+	<!-- 회원 검색 -->
+	<select id="get_rest" parameterType="rest" resultType="rest">
+		select *
+		from iof_apikeys
+		where api_key = #{api_key}
+	</select>
+	
+
+</mapper>

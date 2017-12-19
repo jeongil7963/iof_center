@@ -1,0 +1,8 @@
+diff a/src/main/java/com/iof/center/admin/crop/dao/AdminCropDao.java b/src/main/java/com/iof/center/admin/crop/dao/AdminCropDao.java	(rejected hunks)
+@@ -18,5 +18,6 @@
+ 
+ 	List<AdminCropVO> adminCropList();
+ 	
++	AdminCropVO adminCropidxRead(AdminCropVO vo);
+ 	
+ }
